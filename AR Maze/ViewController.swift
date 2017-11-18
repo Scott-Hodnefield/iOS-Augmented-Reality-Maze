@@ -10,12 +10,21 @@ import UIKit
 import SceneKit
 import ARKit
 
+extension float4x4 {
+    var translation: float3 {
+        let translation = self.columns.3
+        return float3(translation.x, translation.y, translation.z)
+    }
+}
+
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
-    var refPlane: ARPlaneAnchor?
-    var refPlaneFound = false
+    var mazeIsSetUp = false
+    var mazeHeight = 3.0
+    var segmentLength = 3.0
+    var mazeEntrance:SCNVector3!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +34,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        
+        addTapGestureToSceneView()
         
         // Create a new scene
         // let scene = SCNScene(named: "art.scnassets/ship.scn")!
@@ -38,9 +49,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-        
-        // Tell the session to automatically detect horizontal planes
-        configuration.planeDetection = .horizontal
 
         // Run the view's session
         sceneView.session.run(configuration)
@@ -54,7 +62,53 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func setUpMaze() {
+        guard let mazeEntrance = mazeEntrance else {return}
+        addBox(x: mazeEntrance.x, y: mazeEntrance.y, z: mazeEntrance.z)
+        addWall(length: 0.3, width: 0.3, xPos: mazeEntrance.x + 1.0, zPos: mazeEntrance.z)
+        mazeIsSetUp = true
+    }
+    
+    func addBox(x: Float, y: Float, z: Float) {
+        let box = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+        
+        let boxNode = SCNNode()
+        boxNode.geometry = box
+        boxNode.position = SCNVector3(x, y, z)
+        
+        sceneView.scene.rootNode.addChildNode(boxNode)
+    }
+    
+    func addWall(length: Float, width: Float, xPos: Float, zPos: Float) {
+        let box = SCNBox(width: CGFloat(length), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
 
+        let boxNode = SCNNode()
+        boxNode.geometry = box
+        boxNode.position = SCNVector3(xPos, mazeEntrance.y, zPos)
+
+        sceneView.scene.rootNode.addChildNode(boxNode)
+    }
+    
+    func addTapGestureToSceneView() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.didTap(withGestureRecognizer:)))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
+        let tapLocation = recognizer.location(in: sceneView)
+        let hitTestResults = sceneView.hitTest(tapLocation)
+        guard let node = hitTestResults.first?.node else {
+            if mazeIsSetUp == false {
+                let hitTestResultsWithFeaturePoints = sceneView.hitTest(tapLocation, types: .featurePoint)
+                
+                if let hitTestResultWithFeaturePoints = hitTestResultsWithFeaturePoints.first {
+                    let translation = hitTestResultWithFeaturePoints.worldTransform.translation
+                    mazeEntrance = SCNVector3(x: translation.x, y: translation.y, z: translation.z)
+                    setUpMaze()
+                }
+            }
+            return
+        }
+        // node.removeFromParentNode()
     }
     
 
@@ -69,18 +123,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return node
     }
 */
-    
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        
-        if (refPlaneFound == false) {
-            guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-            refPlane = planeAnchor
-            refPlaneFound = true
-            setUpMaze()
-        }
-        
-    }
-
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
