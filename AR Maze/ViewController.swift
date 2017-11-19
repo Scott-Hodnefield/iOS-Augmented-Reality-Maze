@@ -22,9 +22,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     
     var mazeIsSetUp = false
-    var mazeHeight = 3.0
-    var segmentLength = 3.0
-    var mazeEntrance:SCNVector3!
+    var mazeLength: Float = 2.0
+    var mazeWidth: Float = 3.0
+    var mazeHeight: Float = 2.0
+    var unitLength: Float = 1.0
+    var mazeEntrance: SCNVector3!
+    
+    var widthWalls = [[1, 1, 1], [0, 0, 0], [1, 0, 1]]
+    var lengthWalls = [[1, 0, 0, 1], [1, 0, 0, 1]]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,9 +67,32 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func setUpMaze() {
-        guard let mazeEntrance = mazeEntrance else {return}
         addBox(x: mazeEntrance.x, y: mazeEntrance.y, z: mazeEntrance.z)
-        addWall(length: 0.3, width: 0.3, xPos: mazeEntrance.x + 1.0, zPos: mazeEntrance.z)
+        
+        let topLeftPos = SCNVector3(mazeEntrance.x - mazeWidth/2, mazeEntrance.y, mazeEntrance.z - mazeLength)
+        
+        for z in 0...Int(mazeLength/unitLength) {
+            for x in 0...Int(mazeWidth/unitLength) {
+                addPillar(xPos: topLeftPos.x + unitLength*Float(x), zPos: topLeftPos.z + unitLength*Float(z))
+            }
+        }
+        
+        for (rowIndex, row) in widthWalls.enumerated() {
+            for (wallIndex, wall) in row.enumerated() {
+                if wall == 1 {
+                    addWall(width: 0.9, length: 0.1, xPos: topLeftPos.x + 0.5 + Float(wallIndex), zPos: topLeftPos.z + Float(rowIndex))
+                }
+            }
+        }
+        
+        for (rowIndex, row) in lengthWalls.enumerated() {
+            for (wallIndex, wall) in row.enumerated() {
+                if wall == 1 {
+                    addWall(width: 0.1, length: 0.9, xPos: topLeftPos.x + Float(wallIndex), zPos: topLeftPos.z + 0.5 + Float(rowIndex))
+                }
+            }
+        }
+        
         mazeIsSetUp = true
     }
     
@@ -78,12 +106,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene.rootNode.addChildNode(boxNode)
     }
     
-    func addWall(length: Float, width: Float, xPos: Float, zPos: Float) {
-        let box = SCNBox(width: CGFloat(length), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
+    func addPillar(xPos: Float, zPos: Float) {
+        let box = SCNBox(width: 0.1, height: CGFloat(mazeHeight), length: 0.1, chamferRadius: 0)
+        
+        let boxNode = SCNNode()
+        boxNode.geometry = box
+        boxNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        
+        sceneView.scene.rootNode.addChildNode(boxNode)
+    }
+    
+    func addWall(width: Float, length: Float, xPos: Float, zPos: Float) {
+        let box = SCNBox(width: CGFloat(width), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
 
         let boxNode = SCNNode()
         boxNode.geometry = box
-        boxNode.position = SCNVector3(xPos, mazeEntrance.y, zPos)
+        boxNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
 
         sceneView.scene.rootNode.addChildNode(boxNode)
     }
@@ -139,3 +177,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
     }
 }
+
+
+
