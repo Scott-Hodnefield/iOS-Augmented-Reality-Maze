@@ -25,7 +25,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var mazeWidth: Float = 3.0 // treat width as left-to-right distance
     var mazeLength: Float = 3.0 // treat length as 3D-depth (ie. forward & backward)
     var mazeHeight: Float = 0.1 // currently set to low value so it's easy to see whole maze
-    var unitLength: Float = 0.6 // length of each wall segment; must divide mazeLength and mazeWidth perfectly
+    var unitLength: Float = 0.6 // length of each wall segment;
+                                // must divide mazeLength and mazeWidth perfectly;
+                                // must divide mazeWidth to produce an odd number so that maze entrance and exit are perfectly centralized
     var mazeEntrance: SCNVector3! // coordinates of where user taps to place maze entrance
     
     // for manually-created 2x3 maze (currently not in use)
