@@ -24,8 +24,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var mazeIsSetUp = false // will become true once user taps to place maze entrance and maze is set up
     var mazeWidth: Float = 3.0 // treat width as left-to-right distance
     var mazeLength: Float = 3.0 // treat length as 3D-depth (ie. forward & backward)
-    var mazeHeight: Float = 0.3 // currently set to low value so it's easy to see whole maze
-    var unitLength: Float = 0.5 // length of each wall segment; must divide mazeLength and mazeWidth perfectly
+    var mazeHeight: Float = 0.1 // currently set to low value so it's easy to see whole maze
+    var unitLength: Float = 0.6 // length of each wall segment; must divide mazeLength and mazeWidth perfectly
     var mazeEntrance: SCNVector3! // coordinates of where user taps to place maze entrance
     
     // for manually-created 2x3 maze (currently not in use)
@@ -43,8 +43,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         addTapGestureToSceneView() // allows user to tap to place maze entrance
         
         // generates 2D array for maze; determines where walls are
-        // 1st parameter: no. of maze cells along width (depth)
-        // 2nd parameter: no. of maze cells along length (left-right)
+        // 1st parameter: no. of maze cells along width (left-right)
+        // 2nd parameter: no. of maze cells along length (depth)
         // note: each cell can have a wall on its top and/or left
         theMaze = MazeGenerator(Int(mazeWidth/unitLength), Int(mazeLength/unitLength))
     }
@@ -168,8 +168,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // builds walls for top-edges of each maze-cell (if there is supposed to be a wall there)
             for i in 0..<theMaze.width {
                 addPillar(xPos: topLeftPos.x + Float(i)*unitLength, zPos: topLeftPos.z + Float(j)*unitLength)
-                if (theMaze.maze[i][j] & Direction.north.rawValue) == 0 {
-                    addWall(width: unitLength-0.1, length: 0.1, xPos: topLeftPos.x + 0.5*unitLength + Float(i)*unitLength, zPos: topLeftPos.z + Float(j)*unitLength)
+                if (j == 0) { // these few lines ensure no wall is built where exit is supposed to be
+                    if (i != (Int(mazeWidth/unitLength)) / 2) {
+                        if (theMaze.maze[i][j] & Direction.north.rawValue) == 0 {
+                            addWall(width: unitLength-0.1, length: 0.1, xPos: topLeftPos.x + 0.5*unitLength + Float(i)*unitLength, zPos: topLeftPos.z + Float(j)*unitLength)
+                        }
+                    }
+                }
+                else {
+                    if (theMaze.maze[i][j] & Direction.north.rawValue) == 0 {
+                        addWall(width: unitLength-0.1, length: 0.1, xPos: topLeftPos.x + 0.5*unitLength + Float(i)*unitLength, zPos: topLeftPos.z + Float(j)*unitLength)
+                    }
                 }
             }
             addPillar(xPos: topLeftPos.x + mazeWidth, zPos: topLeftPos.z + Float(j)*unitLength)
@@ -186,7 +195,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // manually builds last row of walls since the row isn't auto-generated
         for i in 0..<Int(mazeWidth/unitLength) {
             addPillar(xPos: topLeftPos.x + Float(i)*unitLength, zPos: mazeEntrance.z)
-            addWall(width: unitLength-0.1, length: 0.1, xPos: topLeftPos.x + 0.5*unitLength + Float(i)*unitLength, zPos: mazeEntrance.z)
+            if i != (Int(mazeWidth/unitLength)) / 2 { // ensures no wall is built where entrance is supposed to be
+                addWall(width: unitLength-0.1, length: 0.1, xPos: topLeftPos.x + 0.5*unitLength + Float(i)*unitLength, zPos: mazeEntrance.z)
+            }
         }
         addPillar(xPos: topLeftPos.x + mazeWidth, zPos: mazeEntrance.z)
         
