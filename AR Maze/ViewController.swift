@@ -119,6 +119,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         let sphereNode = SCNNode()
         sphereNode.geometry = sphere
+        sphereNode.name = "marker"
         sphereNode.position = SCNVector3(x, y, z)
         
         sceneView.scene.rootNode.addChildNode(sphereNode)
@@ -159,9 +160,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let tapLocation = recognizer.location(in: sceneView)
         let hitTestResults = sceneView.hitTest(tapLocation)
         
-        // checks if user taps a node (a wall);
+        // checks if user taps a node (a wall or a marker);
         // if not, then user could be placing maze entrance, so checks if maze is already set up
-        guard let touchLocOnNode = hitTestResults.first?.worldCoordinates else {
+            guard let node = hitTestResults.first?.node else {
             if mazeIsSetUp == false {
                 let hitTestResultsWithFeaturePoints = sceneView.hitTest(tapLocation, types: .featurePoint)
                 
@@ -177,9 +178,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             return
         }
         
-        // this code only runs if user is taps a node (a wall)
-        // adds marker to whatever part of whatever wall that user taps
-        addMarker(x: touchLocOnNode.x, y: touchLocOnNode.y, z: touchLocOnNode.z)
+        // this code only runs if user is taps a node
+        if node.name == "marker" { // if node is a marker, removes it from scene
+            node.removeFromParentNode()
+        }
+        else { // if node is a wall, adds marker to whatever part it that user tapped
+            if let touchLocOnNode = hitTestResults.first?.worldCoordinates {
+                addMarker(x: touchLocOnNode.x, y: touchLocOnNode.y, z: touchLocOnNode.z)
+            }
+        }
     }
     
     func setUpMaze() {
