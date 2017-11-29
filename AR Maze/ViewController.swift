@@ -128,24 +128,38 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // every corner of each maze cell has a pillar;
     // this function handles the adding of pillars
     func addPillar(xPos: Float, zPos: Float) {
-        let box = SCNBox(width: 0.1, height: CGFloat(mazeHeight), length: 0.1, chamferRadius: 0)
+        let pillar = SCNBox(width: 0.1, height: CGFloat(mazeHeight), length: 0.1, chamferRadius: 0)
         
-        let boxNode = SCNNode()
-        boxNode.geometry = box
-        boxNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        // for adding texture to pillars
+//        let pillarTexture = UIImage(named: "MazeTexture")
+//        let pillarMaterial = SCNMaterial()
+//        pillarMaterial.diffuse.contents = pillarTexture
+//        pillarMaterial.isDoubleSided = true
+//        pillar.materials = [pillarMaterial]
         
-        sceneView.scene.rootNode.addChildNode(boxNode)
+        let pillarNode = SCNNode()
+        pillarNode.geometry = pillar
+        pillarNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        
+        sceneView.scene.rootNode.addChildNode(pillarNode)
     }
     
     // handles the adding of wall segments
     func addWall(width: Float, length: Float, xPos: Float, zPos: Float) {
-        let box = SCNBox(width: CGFloat(width), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
+        let wall = SCNBox(width: CGFloat(width), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
+        
+        // for adding texture to walls
+//        let wallTexture = UIImage(named: "MazeTexture")
+//        let wallMaterial = SCNMaterial()
+//        wallMaterial.diffuse.contents = wallTexture
+//        wallMaterial.isDoubleSided = true
+//        wall.materials = [wallMaterial]
 
-        let boxNode = SCNNode()
-        boxNode.geometry = box
-        boxNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        let wallNode = SCNNode()
+        wallNode.geometry = wall
+        wallNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
 
-        sceneView.scene.rootNode.addChildNode(boxNode)
+        sceneView.scene.rootNode.addChildNode(wallNode)
     }
     
     // for user to place maze entrance;
