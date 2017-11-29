@@ -24,7 +24,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var mazeIsSetUp = false // will become true once user taps to place maze entrance and maze is set up
     var mazeWidth: Float = 3.0 // treat width as left-to-right distance
     var mazeLength: Float = 3.0 // treat length as 3D-depth (ie. forward & backward)
-    var mazeHeight: Float = 0.1 // currently set to low value so it's easy to see whole maze
+    var mazeHeight: Float = 0.5 // currently set to low value so it's easy to see whole maze
     var unitLength: Float = 0.6 // length of each wall segment;
                                 // must divide mazeLength and mazeWidth perfectly;
                                 // must divide mazeWidth to produce an odd number so that maze entrance and exit are perfectly centralized
@@ -110,27 +110,56 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene.rootNode.addChildNode(boxNode)
     }
     
+    // adds a small red sphere to the scene;
+    // called when user taps any part of any wall to add a marker
+    func addMarker(x: Float, y: Float, z: Float) {
+        let sphere = SCNSphere(radius: 0.025)
+        let color = UIColor.red
+        sphere.materials.first?.diffuse.contents = color
+        
+        let sphereNode = SCNNode()
+        sphereNode.geometry = sphere
+        sphereNode.name = "marker"
+        sphereNode.position = SCNVector3(x, y, z)
+        
+        sceneView.scene.rootNode.addChildNode(sphereNode)
+    }
+    
     // every corner of each maze cell has a pillar;
     // this function handles the adding of pillars
     func addPillar(xPos: Float, zPos: Float) {
-        let box = SCNBox(width: 0.1, height: CGFloat(mazeHeight), length: 0.1, chamferRadius: 0)
+        let pillar = SCNBox(width: 0.1, height: CGFloat(mazeHeight), length: 0.1, chamferRadius: 0)
         
-        let boxNode = SCNNode()
-        boxNode.geometry = box
-        boxNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        // for adding texture to pillars
+//        let pillarTexture = UIImage(named: "MazeTexture")
+//        let pillarMaterial = SCNMaterial()
+//        pillarMaterial.diffuse.contents = pillarTexture
+//        pillarMaterial.isDoubleSided = true
+//        pillar.materials = [pillarMaterial]
         
-        sceneView.scene.rootNode.addChildNode(boxNode)
+        let pillarNode = SCNNode()
+        pillarNode.geometry = pillar
+        pillarNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        
+        sceneView.scene.rootNode.addChildNode(pillarNode)
     }
     
     // handles the adding of wall segments
     func addWall(width: Float, length: Float, xPos: Float, zPos: Float) {
-        let box = SCNBox(width: CGFloat(width), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
+        let wall = SCNBox(width: CGFloat(width), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
+        
+        // for adding texture to walls
+//        let wallTexture = UIImage(named: "MazeTexture")
+//        let wallMaterial = SCNMaterial()
+//        wallMaterial.diffuse.contents = wallTexture
+//        wallMaterial.isDoubleSided = true
+//        wall.materials = [wallMaterial]
 
-        let boxNode = SCNNode()
-        boxNode.geometry = box
-        boxNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
+        let wallNode = SCNNode()
+        wallNode.geometry = wall
+        wallNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
 
-        sceneView.scene.rootNode.addChildNode(boxNode)
+        sceneView.scene.rootNode.addChildNode(wallNode)
     }
     
     // for user to place maze entrance;
@@ -140,10 +169,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.addGestureRecognizer(tapGestureRecognizer)
     }
     
+    // handles user's tap gestures
     @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView)
         let hitTestResults = sceneView.hitTest(tapLocation)
-        guard let node = hitTestResults.first?.node else {
+        
+        // checks if user taps a node (a wall or a marker);
+        // if not, then user could be placing maze entrance, so checks if maze is already set up
+            guard let node = hitTestResults.first?.node else {
             if mazeIsSetUp == false {
                 let hitTestResultsWithFeaturePoints = sceneView.hitTest(tapLocation, types: .featurePoint)
                 
@@ -158,7 +191,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             return
         }
-        // node.removeFromParentNode()
+        
+        // this code only runs if user is taps a node
+        if node.name == "marker" { // if node is a marker, removes it from scene
+            node.removeFromParentNode()
+        }
+        else { // if node is a wall, adds marker to whatever part it that user tapped
+            if let touchLocOnNode = hitTestResults.first?.worldCoordinates {
+                addMarker(x: touchLocOnNode.x, y: touchLocOnNode.y, z: touchLocOnNode.z)
+            }
+        }
     }
     
     func setUpMaze() {
