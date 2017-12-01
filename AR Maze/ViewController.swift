@@ -162,6 +162,36 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene.rootNode.addChildNode(wallNode)
     }
     
+    //Generates a box to be used as the finish for the maze
+    func addMazeFinish(width: Float, length: Float, xPos: Float, zPos: Float) {
+        
+        //Create block object
+        let finishBlock = SCNBox(width: CGFloat(width), height: CGFloat(0.3), length: CGFloat(length), chamferRadius: 0)
+        let finishMaterial = SCNMaterial()
+        finishMaterial.diffuse.contents = UIImage(named: "exclamationBlock")
+        finishMaterial.isDoubleSided = true
+        finishBlock.materials = [finishMaterial]
+        
+        let finishNode = SCNNode()
+        finishNode.geometry = finishBlock
+        finishNode.position = SCNVector3(xPos, 0.1, zPos)
+        finishNode.name = "finish"
+        
+        //Create text object
+//        let finishText = SCNText()
+//        let finishString = (string: "Congrats", extrusionDepth: 4)
+//        finishText.string = finishString
+//
+//        let textNode = SCNNode()
+//        textNode.geometry = finishText
+//        finishNode.position = SCNVector3(xPos, 0.2, zPos)
+//
+//        //Add textnode to scene
+//        sceneView.scene.rootNode.addChildNode(textNode)
+        //Add block node to scene
+        sceneView.scene.rootNode.addChildNode(finishNode)
+    }
+    
     // for user to place maze entrance;
     // function can be extended for special features in the near future
     func addTapGestureToSceneView() {
@@ -195,6 +225,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // this code only runs if user is taps a node
         if node.name == "marker" { // if node is a marker, removes it from scene
             node.removeFromParentNode()
+        }
+        // this code only runs if user taps the finish node
+        else if node.name == "finish" {
+            finishMaze()
         }
         else { // if node is a wall, adds marker to whatever part it that user tapped
             if let touchLocOnNode = hitTestResults.first?.worldCoordinates {
@@ -243,9 +277,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 addWall(width: unitLength-0.1, length: 0.1, xPos: topLeftPos.x + 0.5*unitLength + Float(i)*unitLength, zPos: mazeEntrance.z)
             }
         }
+        //Add maze finish block, currently at the entrance for checking
+        //addMazeFinish(width: 0.3, length: 0.3, xPos: mazeEntrance.x, zPos: mazeEntrance.z)
+        //Add maze finish to the exit
+        addMazeFinish(width: 0.3, length: 0.3, xPos: mazeEntrance.x, zPos: mazeEntrance.z - mazeLength)
+        
+        //addBox(x: mazeEntrance.x, y: mazeHeight/4, z: mazeEntrance.z)
+        
         addPillar(xPos: topLeftPos.x + mazeWidth, zPos: mazeEntrance.z)
         
         mazeIsSetUp = true
+    }
+    //This function will eventually close the session and switch to the maze finished screen?
+    func finishMaze() {
+        print ("Maze is finished")
     }
 
     // MARK: - ARSCNViewDelegate
