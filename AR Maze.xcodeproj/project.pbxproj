@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C7FA2FB1FD4A19C001274CF /* FinishScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7FA2FA1FD4A19C001274CF /* FinishScreenViewController.swift */; };
 		D4A52F951FC214A50045241D /* MazeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A52F941FC214A50045241D /* MazeGenerator.swift */; };
 		D4AE1ED81FBE10FC0084AEB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AE1ED71FBE10FC0084AEB8 /* AppDelegate.swift */; };
 		D4AE1EDA1FBE10FC0084AEB8 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = D4AE1ED91FBE10FC0084AEB8 /* art.scnassets */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9C7FA2FA1FD4A19C001274CF /* FinishScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishScreenViewController.swift; sourceTree = "<group>"; };
 		D4A52F941FC214A50045241D /* MazeGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeGenerator.swift; sourceTree = "<group>"; };
 		D4AE1ED41FBE10FC0084AEB8 /* AR Maze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AR Maze.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4AE1ED71FBE10FC0084AEB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 				D4AE1ED71FBE10FC0084AEB8 /* AppDelegate.swift */,
 				D4AE1ED91FBE10FC0084AEB8 /* art.scnassets */,
 				D4AE1EDB1FBE10FC0084AEB8 /* ViewController.swift */,
+				9C7FA2FA1FD4A19C001274CF /* FinishScreenViewController.swift */,
 				D4E5AF4F1FCF34A700D18B8E /* PhysicsCategory.swift */,
 				D4AE1EDD1FBE10FC0084AEB8 /* Main.storyboard */,
 				D4AE1EE01FBE10FC0084AEB8 /* Assets.xcassets */,
@@ -149,6 +152,7 @@
 				D4A52F951FC214A50045241D /* MazeGenerator.swift in Sources */,
 				D4E5AF501FCF34A700D18B8E /* PhysicsCategory.swift in Sources */,
 				D4AE1EDC1FBE10FC0084AEB8 /* ViewController.swift in Sources */,
+				9C7FA2FB1FD4A19C001274CF /* FinishScreenViewController.swift in Sources */,
 				D4AE1ED81FBE10FC0084AEB8 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,10 +291,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 474283QGNU;
+				DEVELOPMENT_TEAM = A425EL2NQT;
 				INFOPLIST_FILE = "AR Maze/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.AR-Maze";
+				PRODUCT_BUNDLE_IDENTIFIER = somethingLessGeneric;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -302,10 +306,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 474283QGNU;
+				DEVELOPMENT_TEAM = A425EL2NQT;
 				INFOPLIST_FILE = "AR Maze/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.AR-Maze";
+				PRODUCT_BUNDLE_IDENTIFIER = somethingLessGeneric;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

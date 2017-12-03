@@ -22,10 +22,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     @IBOutlet var sceneView: ARSCNView!
     
     var mazeIsSetUp = false // will become true once user taps to place maze entrance and maze is set up
-    var mazeWidth: Float = 3.0 // treat width as left-to-right distance
-    var mazeLength: Float = 3.0 // treat length as 3D-depth (ie. forward & backward)
-    var mazeHeight: Float = 0.5 // currently set to low value so it's easy to see whole maze
-    var unitLength: Float = 0.6 // length of each wall segment;
+    var mazeWidth: Float = 11.0 // treat width as left-to-right distance
+    var mazeLength: Float = 11.0 // treat length as 3D-depth (ie. forward & backward)
+    var mazeHeight: Float = 2.0 // currently set to low value so it's easy to see whole maze
+    var unitLength: Float = 1.0 // length of each wall segment;
                                 // must divide mazeLength and mazeWidth perfectly;
                                 // must divide mazeWidth to produce an odd number so that maze entrance and exit are perfectly centralized
     var mazeEntrance: SCNVector3! // coordinates of where user taps to place maze entrance
@@ -142,11 +142,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let pillar = SCNBox(width: 0.1, height: CGFloat(mazeHeight), length: 0.1, chamferRadius: 0)
         
         // for adding texture to pillars
-//        let pillarTexture = UIImage(named: "MazeTexture")
-//        let pillarMaterial = SCNMaterial()
-//        pillarMaterial.diffuse.contents = pillarTexture
-//        pillarMaterial.isDoubleSided = true
-//        pillar.materials = [pillarMaterial]
+        let pillarTexture = UIImage(named: "castleWall")
+        let pillarMaterial = SCNMaterial()
+        pillarMaterial.diffuse.contents = pillarTexture
+        pillarMaterial.isDoubleSided = true
+        pillar.materials = [pillarMaterial]
         
         let pillarNode = SCNNode()
         pillarNode.geometry = pillar
@@ -160,11 +160,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let wall = SCNBox(width: CGFloat(width), height: CGFloat(mazeHeight), length: CGFloat(length), chamferRadius: 0)
         
         // for adding texture to walls
-//        let wallTexture = UIImage(named: "MazeTexture")
-//        let wallMaterial = SCNMaterial()
-//        wallMaterial.diffuse.contents = wallTexture
-//        wallMaterial.isDoubleSided = true
-//        wall.materials = [wallMaterial]
+        let wallTexture = UIImage(named: "castleWall")
+        let wallMaterial = SCNMaterial()
+        wallMaterial.diffuse.contents = wallTexture
+        wallMaterial.isDoubleSided = true
+        wall.materials = [wallMaterial]
 
         let wallNode = SCNNode()
         wallNode.geometry = wall
@@ -346,13 +346,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func removeFallenObCheckNodes() {
-        //        if let cameraChildNodes = sceneView.pointOfView?.childNodes {
-        //            for node in cameraChildNodes {
-        //                if (node.presentation.position.y < 0) {
-        //                    node.removeFromParentNode()
-        //                }
-        //            }
-        //        }
+//        if let cameraChildNodes = sceneView.pointOfView?.childNodes {
+//            for node in cameraChildNodes {
+//                if (node.presentation.position.y < 0) {
+//                    node.removeFromParentNode()
+//                }
+//            }
+//        }
         
     }
     
@@ -360,7 +360,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     func finishMaze() {
         performSegue(withIdentifier: "goToFinishSegue", sender: nil)
         
-        print ("Maze is finished")
+        //print ("Maze is finished")
     }
 
     // MARK: - ARSCNViewDelegate

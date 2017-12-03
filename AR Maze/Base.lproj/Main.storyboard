@@ -38,33 +38,31 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Congratulations!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m3P-E0-yAZ">
-                                <rect key="frame" x="70" y="157" width="235" height="58"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Congratulations!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m3P-E0-yAZ">
+                                <rect key="frame" x="70" y="157" width="235" height="39.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="33"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="You finished the maze" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gX7-jk-N4q">
-                                <rect key="frame" x="91" y="235" width="193" height="44"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jHp-aV-LJY">
-                                <rect key="frame" x="80" y="417" width="214" height="38"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jHp-aV-LJY">
+                                <rect key="frame" x="97" y="417" width="180" height="100"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Return to main menu" backgroundImage="buttonGrey">
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="returnToMainButton:" destination="vgC-Hd-vCK" eventType="touchUpInside" id="WBq-g9-zoO"/>
+                                    <action selector="returnToMainButton:" destination="vgC-Hd-vCK" eventType="touchUpInside" id="Q21-Rj-r2U"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="m3P-E0-yAZ" firstAttribute="centerX" secondItem="Sir-74-DyX" secondAttribute="centerX" id="Vdg-pm-VYz"/>
+                            <constraint firstItem="u8O-C9-2EV" firstAttribute="bottom" secondItem="jHp-aV-LJY" secondAttribute="bottom" constant="150" id="k6m-Gv-3YI"/>
+                            <constraint firstItem="m3P-E0-yAZ" firstAttribute="top" secondItem="u8O-C9-2EV" secondAttribute="top" constant="137" id="rHF-mm-dJu"/>
+                            <constraint firstItem="jHp-aV-LJY" firstAttribute="centerX" secondItem="Sir-74-DyX" secondAttribute="centerX" id="rwR-w0-Wa9"/>
+                            <constraint firstItem="jHp-aV-LJY" firstAttribute="top" secondItem="m3P-E0-yAZ" secondAttribute="bottom" constant="220.5" id="t4G-VJ-3jB"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="u8O-C9-2EV"/>
                     </view>
                     <connections>
