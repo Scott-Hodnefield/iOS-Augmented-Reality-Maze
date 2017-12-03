@@ -17,7 +17,7 @@ extension float4x4 {
     }
 }
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -29,20 +29,32 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                 // must divide mazeLength and mazeWidth perfectly;
                                 // must divide mazeWidth to produce an odd number so that maze entrance and exit are perfectly centralized
     var mazeEntrance: SCNVector3! // coordinates of where user taps to place maze entrance
+    var theMaze: MazeGenerator!
+    
+    var waitTime: TimeInterval = 0
+    var currentlyOb = false // to check if user is currently out of bounds (in a wall)
+    var obWarningNode: SCNNode!
     
     // for manually-created 2x3 maze (currently not in use)
 //    var widthWalls = [[1, 1, 1], [0, 0, 0], [1, 0, 1]]
 //    var lengthWalls = [[1, 0, 0, 1], [1, 0, 0, 1]]
-    
-    var theMaze: MazeGenerator!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         sceneView.delegate = self
         sceneView.showsStatistics = true
+        sceneView.scene.physicsWorld.contactDelegate = self
         
-        addTapGestureToSceneView() // allows user to tap to place maze entrance
+        // creates the red warning node that will be displayed if user is out of bounds (in a wall)
+        let obWarning = SCNBox(width: 0.1, height: 0.3, length: 0.1, chamferRadius: 0)
+        let color = UIColor.red
+        obWarning.materials.first?.diffuse.contents = color
+        obWarningNode = SCNNode(geometry: obWarning)
+        obWarningNode.position = SCNVector3Make(0, 0, -0.1)
+        sceneView.pointOfView?.addChildNode(obWarningNode)
+        
+        addTapGestureToSceneView() // for when the user taps to set up the maze, place markers, etc.
         
         // generates 2D array for maze; determines where walls are
         // 1st parameter: no. of maze cells along width (left-right)
@@ -113,16 +125,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // adds a small red sphere to the scene;
     // called when user taps any part of any wall to add a marker
     func addMarker(x: Float, y: Float, z: Float) {
-        let sphere = SCNSphere(radius: 0.025)
+        let marker = SCNSphere(radius: 0.025)
         let color = UIColor.red
-        sphere.materials.first?.diffuse.contents = color
+        marker.materials.first?.diffuse.contents = color
         
-        let sphereNode = SCNNode()
-        sphereNode.geometry = sphere
-        sphereNode.name = "marker"
-        sphereNode.position = SCNVector3(x, y, z)
-        
-        sceneView.scene.rootNode.addChildNode(sphereNode)
+        let markerNode = SCNNode()
+        markerNode.geometry = marker
+        markerNode.name = "marker"
+        markerNode.position = SCNVector3(x, y, z)
+        sceneView.scene.rootNode.addChildNode(markerNode)
     }
     
     // every corner of each maze cell has a pillar;
@@ -157,6 +168,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         let wallNode = SCNNode()
         wallNode.geometry = wall
+        
+        wallNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        wallNode.physicsBody?.categoryBitMask = PhysicsCategory.WallOrPillar
+        wallNode.physicsBody?.contactTestBitMask = PhysicsCategory.Camera
+        wallNode.physicsBody?.collisionBitMask = PhysicsCategory.None
+        
         wallNode.position = SCNVector3(xPos, mazeEntrance.y + (mazeHeight/2), zPos)
 
         sceneView.scene.rootNode.addChildNode(wallNode)
@@ -235,6 +252,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 addMarker(x: touchLocOnNode.x, y: touchLocOnNode.y, z: touchLocOnNode.z)
             }
         }
+    }
+    
+    // handles contact between user and walls
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        print("contact")
+        currentlyOb = true
     }
     
     func setUpMaze() {
