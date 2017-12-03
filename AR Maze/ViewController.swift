@@ -290,6 +290,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     //This function will eventually close the session and switch to the maze finished screen?
     func finishMaze() {
+        performSegue(withIdentifier: "goToFinishSegue", sender: nil)
+        
         print ("Maze is finished")
     }
 
