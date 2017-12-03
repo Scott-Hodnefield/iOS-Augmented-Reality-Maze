@@ -288,6 +288,51 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         mazeIsSetUp = true
     }
+    
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        
+        if time > waitTime {
+            spawnObCheckNode()
+            currentlyOb = false
+            removeFallenObCheckNodes()
+            waitTime = time + TimeInterval(0.5)
+        }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        if currentlyOb == true {
+            obWarningNode.opacity = 1
+        }
+        else {
+            obWarningNode.opacity = 0
+        }
+    }
+    
+    func spawnObCheckNode() {
+        let obCheckSphere = SCNSphere(radius: 0.02)
+        let obCheckNode = SCNNode(geometry: obCheckSphere)
+        obCheckNode.opacity = 0
+        
+        obCheckNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+        obCheckNode.physicsBody?.categoryBitMask = PhysicsCategory.Camera
+        obCheckNode.physicsBody?.contactTestBitMask = PhysicsCategory.WallOrPillar
+        obCheckNode.physicsBody?.collisionBitMask = PhysicsCategory.None
+        
+        obCheckNode.position = SCNVector3Make(0, 0, 0)
+        sceneView.pointOfView?.addChildNode(obCheckNode)
+    }
+    
+    func removeFallenObCheckNodes() {
+        //        if let cameraChildNodes = sceneView.pointOfView?.childNodes {
+        //            for node in cameraChildNodes {
+        //                if (node.presentation.position.y < 0) {
+        //                    node.removeFromParentNode()
+        //                }
+        //            }
+        //        }
+        
+    }
+    
     //This function will eventually close the session and switch to the maze finished screen?
     func finishMaze() {
         performSegue(withIdentifier: "goToFinishSegue", sender: nil)
